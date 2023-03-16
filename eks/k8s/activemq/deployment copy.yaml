@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: activemq
+spec:
+  selector:
+    matchLabels:
+      app: activemq
+  template:
+    metadata:
+      labels:
+        app: activemq
+    spec:
+      containers:
+      - name: activemq
+        image: docker.io/hedrickbt/activemq:5.17.2-jdk17.0.5_8
+        imagePullPolicy: Always
+        resources:
+          limits:
+            memory: "1G"
+            cpu: "500m"
+        volumeMounts:
+          - name: activemq-vol
+            mountPath: /app/conf/logging.properties
+            subPath: logging.properties
+          - name: jetty-realm-properties
+            mountPath: /app/conf/jetty-realm.properties
+            subPath: jetty-realm.properties
+        ports:
+        - containerPort: 8161
+        - containerPort: 61613
+      volumes:
+        - name: activemq-vol
+          configMap:
+            name: activemq-cm
+        - name: jetty-realm-properties
+          secret:
+            secretName: activemq-secret
+
+

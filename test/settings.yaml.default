@@ -1,0 +1,21 @@
+# Docker
+activemq:
+  user: 'activemq-admin'
+  password: 'CHANGEME'
+  host: 'localhost'
+  port: 61613
+  queue: '/queue/test'
+  heartbeat:
+    send: 60000
+    receive: 60000
+
+# AWS
+# activemq:
+#   user: 'activemq-admin'
+#   password: 'w#7$k^PmIb0G^UoBZIS^OgBN4Sziaj'
+#   host: 'hedrickbt-activemq-stomp.poc.k8s.rainhail.com'
+#   port: 61613
+#   queue: '/queue/test'
+#   heartbeat:
+#     send: 15000
+#     receive: 10000

@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: activemq-ingress
+  labels:
+    name: activemq-app
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: hedrickbt-activemq.poc.k8s.rainhail.com
+    cert-manager.io/cluster-issuer: ca-issuer
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: hedrickbt-activemq.poc.k8s.rainhail.com
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: activemq-web
+            port: 
+              number: 80
+  tls:
+    - hosts:
+        - hedrickbt-activemq.poc.k8s.rainhail.com
+      secretName: activemq-tls    

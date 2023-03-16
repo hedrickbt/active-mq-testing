@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: activemq-deployment
+  labels:
+    app: activemq-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: activemq-app
+  template:
+    metadata:
+      labels:
+        app: activemq-app
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/arch
+                operator: In
+                values:
+                - amd64
+                - arm64
+      containers:
+      - name: activemq
+        image: docker.io/hedrickbt/activemq:5.17.2-jdk17.0.5_8
+        imagePullPolicy: Always
+        resources:
+          limits:
+            #memory: "1G"
+            cpu: "500m"
+        volumeMounts:
+          - name: activemq-vol
+            mountPath: /app/conf/logging.properties
+            subPath: logging.properties
+          - name: jetty-realm-properties
+            mountPath: /app/conf/jetty-realm.properties
+            subPath: jetty-realm.properties
+        ports:
+        - name: http
+          containerPort: 8161
+        - name: stomp
+          containerPort: 61613
+      volumes:
+        - name: activemq-vol
+          configMap:
+            name: activemq-cm
+        - name: jetty-realm-properties
+          secret:
+            secretName: activemq-secret
+      nodeSelector:
+        kubernetes.io/os: linux
+        node.kubernetes.io/instance-type: t2.micro
+
+
